@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buy Coins</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+
+      body.no-scroll {
+        overflow: hidden;
+      }
+
+      /* Styles for the header */
+      header {
+        background-color: #fff;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        margin: 0 auto;
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      .upload-button button {
+        background-color: transparent;
+        color: black;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      /* End of styles for the header */
+
+      .container {
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align items to the left */
+        margin-bottom: 20px;
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between; /* Distribute space between title and link */
+      }
+
+      .title h2 {
+        margin: 0;
+      }
+
+      .title span {
+        color: black;
+      }
+
+      .user-info {
+        margin-bottom: 10px;
+      }
+
+      .coin-packages {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .coin-package {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .coin-package:hover {
+        background-color: #f0f0f0;
+      }
+
+      .coin-package.active {
+        background-color: #fff0f3;
+        border-color: #ff5487;
+      }
+
+      .payment-methods {
+        margin-bottom: 20px;
+      }
+
+      .payment-button {
+        background-color: #fe2c55;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      /* Style for the Recharge text and image */
+      .recharge-info {
+        display: flex;
+        align-items: center; /* Vertically center the text and image */
+        margin-bottom: 10px; /* Add some space below */
+      }
+
+      .recharge-info p {
+        margin: 0; /* Remove default paragraph margins */
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: black;
+        margin-right: 5px; /* Space between text and red part */
+      }
+
+      .recharge-info span {
+        color: #ff2c55;
+        margin-right: 5px; /* Space between red text and image */
+      }
+
+      .recharge-info img {
+        width: 16px;
+        height: 16px;
+      }
+
+      #username-input {
+        width: calc(100vw - 60px);
+      }
+
+      .overlay.active {
+        background-color: rgb(0, 0, 0, 0.5);
+        position: absolute;
+        inset: 0;
+        bottom: -500px;
+        z-index: 9;
+      }
+
+      .close-action-btn {
+        background-color: transparent;
+        border: none;
+        display: block;
+        position: absolute;
+        right: 20px;
+        top: 10px;
+      }
+
+      .action-block {
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        position: absolute;
+        top: -150vh;
+        left: 20px;
+        right: 20px;
+        z-index: 10;
+        transition: top 400ms ease-in-out;
+      }
+
+      .action.active .action-block {
+        top: 10vh;
+      }
+
+      .action-block__header {
+        display: block;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .action-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+
+      .coin-icon {
+        height: 36px;
+      }
+
+      .input-wrapper {
+        display: flex;
+        padding: 10px;
+        gap: 10px;
+        border-radius: 5px;
+        border: 2px solid #ededed;
+        margin-bottom: 20px;
+      }
+
+      .input-wrapper input {
+        border: 0;
+      }
+
+      .input-wrapper input:focus {
+        outline: none;
+        border: 0;
+      }
+
+      .checked-item {
+        padding: 2px;
+
+        border: 1px solid #97566c;
+        border-radius: 100px;
+      }
+
+      .visa-action {
+        height: 16px;
+      }
+
+      .action-btn {
+        margin-top: 40px;
+        display: block;
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        background: #fc2a54;
+        color: white;
+        font-weight: 600;
+      }
+
+      .payments {
+        visibility: hidden;
+        inset: 0;
+        transition: visibility 400ms ease-in-out;
+      }
+
+      .payments.active {
+        visibility: visible;
+      }
+
+      .payments-process {
+        visibility: hidden;
+        inset: 0;
+        transition: visibility 400ms ease-in-out;
+      }
+
+      .payments-success {
+        visibility: hidden;
+        inset: 0;
+        transition: visibility 400ms ease-in-out;
+      }
+
+      .payments-success.active {
+        visibility: visible;
+      }
+
+      .payments-custom {
+        visibility: hidden;
+        inset: 0;
+        transition: visibility 400ms ease-in-out;
+      }
+
+      .payments-custom.active {
+        visibility: visible;
+      }
+
+      .payments-process .action-block,
+      .payments-success .action-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .payments-process.active {
+        visibility: visible;
+      }
+
+      .action-img {
+        height: 50px;
+        width: 50px;
+        padding: 10px;
+        border-radius: 35px;
+        background: lightgray;
+        margin-bottom: 30px;
+      }
+
+      .num-table {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .table-item {
+        border-radius: 3px;
+        background: #ededed;
+        padding: 20px 0;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      input {
+        font-size: 16px;
+      }
+
+      video {
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="logo">
+          <img src="tik_tok_logo.PNG" alt="TikTok Logo" />
+        </div>
+        <div class="upload-button">
+          <button style="font-size: 16px">+ Upload</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div
+        class="header-content"
+        style="display: flex; flex-direction: column; align-items: flex-start"
+      >
+        <div class="title" style="display: flex; align-items: center">
+          <h2>Get Coins</h2>
+          <span style="color: black; margin-left: 103px"
+            >View transaction history</span
+          >
+        </div>
+        <div class="user-info">
+          <input
+            type="text"
+            id="username-input"
+            name="nickname"
+            placeholder="Enter username"
+            style="
+              background-color: #f0f0f0;
+              border: 1px solid #ccc;
+              padding: 10px;
+              border-radius: 3px;
+              box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            "
+          />
+        </div>
+        <p
+          style="
+            color: black;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            text-align: left; /* Ensure left alignment */
+            display: left; /* Use inline-flex for alignment */
+            align-items: left; /* Vertically align items */
+          "
+        >
+          Recharge:
+          <span style="color: #ff2c55; margin-left: -1px"
+            >Save upto 31% compared to in-app purchase
+            <a href="1.jpg"
+              ><img
+                src="1.jpg"
+                alt="Image"
+                style="width: 16px; height: 16px; margin-left: -2px" /></a
+          ></span>
+        </p>
+
+        <div class="payment-methods">
+          <p>
+            Payment method
+            <img
+              src="mastercard_logo.png"
+              alt="Mastercard Logo"
+              style="height: 17px; margin-right: 10px; vertical-align: middle"
+            />
+          </p>
+        </div>
+      </div>
+      <div class="coin-packages" id="items-list">
+        <div class="coin-package" data-amount="30" data-price="0.37">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="
+                height: 36px;
+                margin-right: 5px;
+                vertical-align: middle;
+                top: 3px;
+              "
+            />30
+          </h3>
+          <p>€0.37</p>
+        </div>
+        <div class="coin-package" data-amount="350" data-price="4.35">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />350
+          </h3>
+          <p>€4.35</p>
+        </div>
+        <div class="coin-package" data-amount="700" data-price="8.69">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />700
+          </h3>
+          <p>€8.69</p>
+        </div>
+        <div class="coin-package" data-amount="1400" data-price="17.39">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />1,400
+          </h3>
+          <p>€17.39</p>
+        </div>
+        <div class="coin-package" data-amount="3500" data-price="43.45">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />3,500
+          </h3>
+          <p>€43.45</p>
+        </div>
+        <div class="coin-package" data-amount="7000" data-price="86.85">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />7,000
+          </h3>
+          <p>€86.85</p>
+        </div>
+        <div class="coin-package" data-amount="17500" data-price="217.05">
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />17,500
+          </h3>
+          <p>€217.05</p>
+        </div>
+        <div
+          id="action-custom"
+          class="coin-package"
+          data-amount="0"
+          data-price="217.05"
+        >
+          <h3>
+            <img
+              src="12.PNG"
+              alt="Coin Icon"
+              style="height: 36px; margin-right: 5px; vertical-align: middle"
+            />Custom
+          </h3>
+          <p>Large amout supported</p>
+        </div>
+      </div>
+      <div class="payment-methods">
+        <p>
+          Payment method
+          <img
+            src="mastercard_logo.png"
+            alt="Mastercard Logo"
+            style="height: 17px; margin-right: 10px; vertical-align: middle"
+          />
+        </p>
+      </div>
+      <button class="payment-button" id="payment-btn">Recharge</button>
+    </div>
+
+    <div class="action payments">
+      <div class="action-block">
+        <strong class="action-block__header">Order Summary</strong>
+        <!-- <button class="close-action-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="25"
+            viewBox="0 0 25 25"
+            fill="none"
+          >
+            <path
+              d="M7.04004 17.9615L12.5015 12.5L17.963 17.9615M17.963 7.03857L12.5005 12.5L7.04004 7.03857"
+              stroke="#4E4E4E"
+              stroke-width="1.5625"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button> -->
+        <div class="action-item">
+          <span>Account</span>
+          <span id="username-bill">4324322323</span>
+        </div>
+        <div class="action-item">
+          <span id="total-coins"></span>
+          <span id="total-price">$133133133</span>
+        </div>
+        <div class="action-item">
+          <span>Select a payment</span>
+          <svg
+            class="checked-item"
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+          >
+            <circle cx="6" cy="6" r="5.5" fill="#97566C" />
+          </svg>
+        </div>
+        <div class="action-item action-item--column">
+          <span>Method</span>
+          <span
+            ><img class="visa-action" src="./visaicon.png" alt="" /> 58** ****
+            **** **12</span
+          >
+        </div>
+        <div class="action-item">
+          <span>Balance</span>
+          <span id="total-balance">$456 000</span>
+        </div>
+        <button class="action-btn" id="process-btn">Recharge</button>
+      </div>
+    </div>
+
+    <div class="action payments-process">
+      <div class="action-block">
+        <img src="./anim.gif" style="height: 100px; filter: invert(1)" />
+        <strong class="action-block__header">Processing your Payment</strong>
+        <p>This could take a few seconds</p>
+        <p id="time">4:30</p>
+      </div>
+    </div>
+
+    <div class="action payments-success">
+      <div class="action-block">
+        <svg
+          class="action-img"
+          xmlns="http://www.w3.org/2000/svg"
+          width="55"
+          height="56"
+          viewBox="0 0 55 56"
+          fill="none"
+        >
+          <path
+            d="M45.1638 14.9191C45.3772 15.132 45.5465 15.3849 45.6621 15.6633C45.7776 15.9417 45.8371 16.2402 45.8371 16.5416C45.8371 16.843 45.7776 17.1415 45.6621 17.4199C45.5465 17.6983 45.3772 17.9512 45.1638 18.1641L24.5388 38.7891C24.3259 39.0025 24.073 39.1718 23.7946 39.2874C23.5162 39.4029 23.2177 39.4624 22.9163 39.4624C22.6149 39.4624 22.3164 39.4029 22.038 39.2874C21.7596 39.1718 21.5067 39.0025 21.2938 38.7891L12.1271 29.6224C11.6968 29.1921 11.4551 28.6085 11.4551 27.9999C11.4551 27.3914 11.6968 26.8078 12.1271 26.3774C12.5575 25.9471 13.1411 25.7054 13.7496 25.7054C14.3582 25.7054 14.9418 25.9471 15.3721 26.3774L22.9163 33.9262L41.9188 14.9191C42.1317 14.7057 42.3846 14.5364 42.663 14.4208C42.9414 14.3053 43.2399 14.2458 43.5413 14.2458C43.8427 14.2458 44.1412 14.3053 44.4196 14.4208C44.698 14.5364 44.9509 14.7057 45.1638 14.9191Z"
+            fill="#FC2A54"
+          />
+        </svg>
+        <strong class="action-block__header">Success</strong>
+        <p>You will get the coins in few min</p>
+        <button class="action-btn" id="goback-btn">Go Back</button>
+      </div>
+    </div>
+
+    <div class="action payments-custom">
+      <div class="action-block">
+        <div class="input-wrapper">
+          <img class="coin-icon" src="./12.PNG" alt="coin-icon" />
+          <input type="number" class="action-input" id="custom-input" />
+        </div>
+        <div class="num-table" id="custom-table">
+          <div class="table-item" data-value="1">1</div>
+          <div class="table-item" data-value="2">2</div>
+          <div class="table-item" data-value="3">3</div>
+          <div class="table-item" data-value="del">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="26"
+              height="26"
+              viewBox="0 0 26 26"
+              fill="none"
+            >
+              <path
+                d="M2.82324 12.3334L8.03158 6.08338C8.12952 5.96579 8.25216 5.87123 8.39079 5.80641C8.52942 5.7416 8.68063 5.70813 8.83366 5.70838H20.292C21.1208 5.70838 21.9156 6.03762 22.5017 6.62367C23.0878 7.20972 23.417 8.00457 23.417 8.83338V17.1667C23.417 17.9955 23.0878 18.7904 22.5017 19.3764C21.9156 19.9625 21.1208 20.2917 20.292 20.2917H8.83366C8.68063 20.292 8.52942 20.2585 8.39079 20.1937C8.25216 20.1289 8.12952 20.0343 8.03158 19.9167L2.82324 13.6667C2.66734 13.4795 2.58197 13.2436 2.58197 13C2.58197 12.7564 2.66734 12.5205 2.82324 12.3334ZM9.32324 18.2084H20.292C20.5683 18.2084 20.8332 18.0986 21.0286 17.9033C21.2239 17.7079 21.3337 17.443 21.3337 17.1667V8.83338C21.3337 8.55711 21.2239 8.29216 21.0286 8.09681C20.8332 7.90146 20.5683 7.79171 20.292 7.79171H9.32324L4.97949 13L9.32324 18.2084ZM12.2607 10.1771C12.3576 10.0795 12.4728 10.002 12.5997 9.94911C12.7267 9.89623 12.8628 9.869 13.0003 9.869C13.1378 9.869 13.274 9.89623 13.4009 9.94911C13.5279 10.002 13.6431 10.0795 13.7399 10.1771L15.0837 11.5313L16.4274 10.1771C16.6236 9.98098 16.8896 9.87078 17.167 9.87078C17.4444 9.87078 17.7104 9.98098 17.9066 10.1771C18.1027 10.3733 18.2129 10.6393 18.2129 10.9167C18.2129 11.0541 18.1859 11.1901 18.1333 11.317C18.0807 11.4439 18.0037 11.5592 17.9066 11.6563L16.5524 13L17.9066 14.3438C18.0042 14.4406 18.0817 14.5558 18.1346 14.6828C18.1875 14.8097 18.2147 14.9459 18.2147 15.0834C18.2147 15.2209 18.1875 15.357 18.1346 15.484C18.0817 15.6109 18.0042 15.7261 17.9066 15.823C17.8097 15.9206 17.6945 15.9981 17.5676 16.051C17.4407 16.1039 17.3045 16.1311 17.167 16.1311C17.0295 16.1311 16.8933 16.1039 16.7664 16.051C16.6395 15.9981 16.5242 15.9206 16.4274 15.823L15.0837 14.4688L13.7399 15.823C13.6431 15.9206 13.5279 15.9981 13.4009 16.051C13.274 16.1039 13.1378 16.1311 13.0003 16.1311C12.8628 16.1311 12.7267 16.1039 12.5997 16.051C12.4728 15.9981 12.3576 15.9206 12.2607 15.823C12.1631 15.7261 12.0856 15.6109 12.0327 15.484C11.9798 15.357 11.9526 15.2209 11.9526 15.0834C11.9526 14.9459 11.9798 14.8097 12.0327 14.6828C12.0856 14.5558 12.1631 14.4406 12.2607 14.3438L13.6149 13L12.2607 11.6563C12.1631 11.5595 12.0856 11.4442 12.0327 11.3173C11.9798 11.1904 11.9526 11.0542 11.9526 10.9167C11.9526 10.7792 11.9798 10.643 12.0327 10.5161C12.0856 10.3892 12.1631 10.274 12.2607 10.1771Z"
+                fill="#7A7A7A"
+              />
+            </svg>
+          </div>
+          <div class="table-item" data-value="4">4</div>
+          <div class="table-item" data-value="5">5</div>
+          <div class="table-item" data-value="6">6</div>
+          <div class="table-item" data-value=".">.</div>
+          <div class="table-item" data-value="7">7</div>
+          <div class="table-item" data-value="8">8</div>
+          <div class="table-item" data-value="9">9</div>
+          <div id="custom-value" class="table-item" data-value="0">0</div>
+        </div>
+        <div class="action-item">
+          <span>Account</span>
+          <strong id="custom-total">$0</strong>
+        </div>
+        <button class="action-btn" id="custom-to-pay">Recharge</button>
+      </div>
+    </div>
+
+    <div class="overlay"></div>
+
+    <script>
+      const switchTo = (blockClass) => {
+        const currentBlock = document.querySelector(".action.active");
+        const nextBlock = document.querySelector(blockClass);
+        currentBlock != null ? currentBlock.classList.remove("active") : "";
+        nextBlock.classList.add("active");
+      };
+
+      const overlay = document.querySelector(".overlay");
+      const toggleOverlay = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        overlay.classList.toggle("active");
+        document.body.classList.toggle("no-scroll");
+      };
+
+      let paymentBalance = 600000000;
+      const paymentBlock = document.querySelector(".payments");
+
+      const usernameInput = document.getElementById("username-input");
+
+      const itemsList = document.getElementById("items-list");
+      const items = itemsList.querySelectorAll(".coin-package");
+      itemsList.addEventListener("click", (event) => {
+        const target = event.target;
+        const parent = target.closest(".coin-package");
+        for (let item of items) {
+          item.classList.remove("active");
+        }
+        parent.classList.add("active");
+        console.log("chosen a new item");
+      });
+
+      const cleanData = () => {
+        usernameInput.value = "";
+      };
+
+      const paymentBtn = document.getElementById("payment-btn");
+      paymentBtn.addEventListener("click", () => {
+        const soAllisOkay =
+          usernameInput.value !== "" &&
+          document.querySelector(".coin-package.active")
+            ? true
+            : false;
+        console.log(soAllisOkay);
+        if (soAllisOkay) {
+          const coinsCount = document
+            .querySelector(".coin-package.active")
+            .getAttribute("data-amount");
+
+          document.querySelector("#username-bill").textContent =
+            usernameInput.value;
+          document.querySelector(
+            "#total-coins"
+          ).textContent = `${coinsCount} Coins`;
+          document.querySelector("#total-price").textContent = `$${Math.round(
+            coinsCount * 0.0124,
+            2
+          )}`;
+
+          paymentBalance = paymentBalance - Math.round(coinsCount * 0.0124, 2);
+
+          document.querySelector(
+            "#total-balance"
+          ).textContent = `$${paymentBalance}`;
+
+          toggleOverlay();
+          switchTo(".payments");
+        } else {
+          console.log("payment denied not enough data");
+        }
+        if (soAllisOkay == true) return;
+      });
+
+      const processBtn = document.getElementById("process-btn");
+      processBtn.addEventListener("click", () => {
+        startTimer();
+        switchTo(".payments-process");
+        setTimeout(() => switchTo(".payments-success"), 3000);
+        stopTimer();
+      });
+
+      const goBackBtn = document.getElementById("goback-btn");
+      goBackBtn.addEventListener("click", () => {
+        cleanData();
+        toggleOverlay();
+        document.querySelector(".action.active").classList.remove("active");
+      });
+
+      const customBtn = document.getElementById("action-custom");
+      customBtn.addEventListener("click", () => {
+        const soAllisOkay =
+          usernameInput.value !== "" &&
+          usernameInput.value.length > 5 &&
+          document.querySelector(".coin-package.active")
+            ? true
+            : false;
+        if (soAllisOkay) {
+          toggleOverlay();
+          coinsCount = document
+            .querySelector(".coin-package.active")
+            .getAttribute("data-amount");
+          paymentBalance = paymentBalance - Math.round(coinsCount * 0.0124, 2);
+          switchTo(".payments-custom");
+        }
+      });
+
+      const customValue = document.getElementById("custom-value");
+      const customPrice = document.getElementById("custom-total");
+      const customInput = document.getElementById("custom-input");
+      const updatePrice = () => {
+        let result = Math.round(customInput.value * 0.0124 * 100) / 100;
+        customPrice.textContent = `$ ${result}`;
+
+        const coin = document.querySelector(".coin-package.active");
+        coin.setAttribute("data-amount", customInput.value);
+        coin.setAttribute("data-price", result);
+      };
+
+      const customTable = document.getElementById("custom-table");
+      customInput.addEventListener("input", () => {
+        updatePrice();
+      });
+
+      customTable.addEventListener("click", (event) => {
+        const value = event.target
+          .closest(".table-item")
+          .getAttribute("data-value");
+        console.log(value);
+        customInput.value = customInput.value + value;
+        updatePrice();
+      });
+
+      const customBtnRedirect = document.getElementById("custom-to-pay");
+      customBtnRedirect.addEventListener("click", () => {
+        const coinsCount = document
+          .querySelector(".coin-package.active")
+          .getAttribute("data-amount");
+
+        document.querySelector("#username-bill").textContent =
+          usernameInput.value;
+        document.querySelector(
+          "#total-coins"
+        ).textContent = `${coinsCount} Coins`;
+        document.querySelector("#total-price").textContent = `$${Math.round(
+          coinsCount * 0.0124,
+          2
+        )}`;
+
+        switchTo(".payments");
+      });
+
+      let timeElement = document.getElementById("time");
+      let timeString = timeElement.textContent;
+      let yPos = 0;
+
+      function startTimer() {
+        let [minutes, seconds] = timeString.split(":").map(Number);
+        let interval = setInterval(() => {
+          if (minutes == 4 && seconds == 25) {
+            clearInterval(interval);
+            timeElement.textContent = "4:30";
+            return;
+          }
+
+          if (seconds === 0) {
+            minutes--;
+            seconds = 59;
+          } else {
+            seconds--;
+          }
+
+          timeElement.textContent = `${minutes}:${seconds
+            .toString()
+            .padStart(2, "0")}`;
+
+          yPos += 10;
+          timeElement.style.top = yPos + "px";
+        }, 1000);
+
+        return interval;
+      }
+
+      //   let's provide some TDD first (FOR FUN ONLY)
+      console.log(usernameInput);
+      console.log(itemsList);
+      console.log(paymentBtn);
+    </script>
+  </body>
+</html>
