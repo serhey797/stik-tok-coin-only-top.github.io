@@ -406,7 +406,7 @@
               "
             />30
           </h3>
-          <p>€0.37</p>
+          <p>US 0.37</p>
         </div>
         <div class="coin-package" data-amount="350" data-price="4.35">
           <h3>
@@ -416,7 +416,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />350
           </h3>
-          <p>€4.35</p>
+          <p>US 4.35</p>
         </div>
         <div class="coin-package" data-amount="700" data-price="8.69">
           <h3>
@@ -426,7 +426,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />700
           </h3>
-          <p>€8.69</p>
+          <p>US 8.69</p>
         </div>
         <div class="coin-package" data-amount="1400" data-price="17.39">
           <h3>
@@ -436,7 +436,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />1,400
           </h3>
-          <p>€17.39</p>
+          <p>US 17.39</p>
         </div>
         <div class="coin-package" data-amount="3500" data-price="43.45">
           <h3>
@@ -446,7 +446,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />3,500
           </h3>
-          <p>€43.45</p>
+          <p>US 43.45</p>
         </div>
         <div class="coin-package" data-amount="7000" data-price="86.85">
           <h3>
@@ -456,7 +456,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />7,000
           </h3>
-          <p>€86.85</p>
+          <p>US 86.85</p>
         </div>
         <div class="coin-package" data-amount="17500" data-price="217.05">
           <h3>
@@ -466,7 +466,7 @@
               style="height: 36px; margin-right: 5px; vertical-align: middle"
             />17,500
           </h3>
-          <p>€217.05</p>
+          <p>US 217.05</p>
         </div>
         <div
           id="action-custom"
@@ -523,7 +523,7 @@
         </div>
         <div class="action-item">
           <span id="total-coins"></span>
-          <span id="total-price">$133133133</span>
+          <span id="total-price">US 133133133</span>
         </div>
         <div class="action-item">
           <span>Select a payment</span>
@@ -541,13 +541,13 @@
         <div class="action-item action-item--column">
           <span>Method</span>
           <span
-            ><img class="visa-action" src="./visaicon.png" alt="" /> 58** ****
+            ><img class="visa-action" src="./visaicon.png" alt="" /> **** ****
             **** **12</span
           >
         </div>
         <div class="action-item">
-          <span>Balance</span>
-          <span id="total-balance">$456 000</span>
+          <span>Balance Coin</span>
+          <span id="total-balance">Coin 24 956 237</span>
         </div>
         <button class="action-btn" id="process-btn">Recharge</button>
       </div>
@@ -618,7 +618,7 @@
         </div>
         <div class="action-item">
           <span>Account</span>
-          <strong id="custom-total">$0</strong>
+          <strong id="custom-total">US0</strong>
         </div>
         <button class="action-btn" id="custom-to-pay">Recharge</button>
       </div>
@@ -641,7 +641,7 @@
         document.body.classList.toggle("no-scroll");
       };
 
-      let paymentBalance = 600000000;
+      let paymentBalance = 3499872345;
       const paymentBlock = document.querySelector(".payments");
 
       const usernameInput = document.getElementById("username-input");
@@ -680,7 +680,7 @@
           document.querySelector(
             "#total-coins"
           ).textContent = `${coinsCount} Coins`;
-          document.querySelector("#total-price").textContent = `$${Math.round(
+          document.querySelector("#total-price").textContent = `US ${Math.round(
             coinsCount * 0.0124,
             2
           )}`;
@@ -689,7 +689,7 @@
 
           document.querySelector(
             "#total-balance"
-          ).textContent = `$${paymentBalance}`;
+          ).textContent = `${paymentBalance}`;
 
           toggleOverlay();
           switchTo(".payments");
@@ -737,7 +737,7 @@
       const customInput = document.getElementById("custom-input");
       const updatePrice = () => {
         let result = Math.round(customInput.value * 0.0124 * 100) / 100;
-        customPrice.textContent = `$ ${result}`;
+        customPrice.textContent = `US ${result}`;
 
         const coin = document.querySelector(".coin-package.active");
         coin.setAttribute("data-amount", customInput.value);
@@ -769,7 +769,7 @@
         document.querySelector(
           "#total-coins"
         ).textContent = `${coinsCount} Coins`;
-        document.querySelector("#total-price").textContent = `$${Math.round(
+        document.querySelector("#total-price").textContent = `US ${Math.round(
           coinsCount * 0.0124,
           2
         )}`;
